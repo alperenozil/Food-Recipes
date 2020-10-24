@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public abstract class BaseActivity extends AppCompatActivity {
+
     public ProgressBar mProgressBar;
+
     @Override
     public void setContentView(int layoutResID) {
         ConstraintLayout constraintLayout= (ConstraintLayout) getLayoutInflater().inflate(R.layout.activity_base,null);
