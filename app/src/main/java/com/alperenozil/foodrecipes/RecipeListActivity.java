@@ -14,6 +14,7 @@ import com.alperenozil.foodrecipes.requests.ServiceGenerator;
 import com.alperenozil.foodrecipes.requests.responses.RecipeResponse;
 import com.alperenozil.foodrecipes.requests.responses.RecipeSearchResponse;
 import com.alperenozil.foodrecipes.util.Constants;
+import com.alperenozil.foodrecipes.util.Testing;
 import com.alperenozil.foodrecipes.viewmodels.RecipeListViewModel;
 
 import java.util.ArrayList;
@@ -40,9 +41,7 @@ public class RecipeListActivity extends BaseActivity {
             @Override
             public void onChanged(List<Recipe> recipes) {
                 if (recipes!=null) {
-                    for(Recipe recipe : recipes){
-                        Log.d(TAG, "onChanged: "+recipe.toString());
-                    }
+                    Testing.printRecipes(recipes,TAG);
                 }
             }
         });
