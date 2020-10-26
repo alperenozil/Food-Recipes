@@ -11,6 +11,9 @@ import java.util.List;
 public class RecipeRepository {
     private static RecipeRepository instance;
     private RecipeApiClient mRecipeApiClient;
+    private String mQuery;
+    private int mPageNumber;
+    private MutableLiveData<Boolean> mIsQueryExhausted = new MutableLiveData<>();
 
     public static RecipeRepository getInstance(){
         if (instance==null){
@@ -26,4 +29,15 @@ public class RecipeRepository {
     public LiveData<List<Recipe>> getRecipes(){
         return mRecipeApiClient.getRecipies();
     }
+
+    public void searchRecipesApi(String query, int pageNumber){
+        if(pageNumber == 0){
+            pageNumber = 1;
+        }
+        mQuery = query;
+        mPageNumber = pageNumber;
+        mIsQueryExhausted.setValue(false);
+        mRecipeApiClient.searchRecipesApi(query, pageNumber);
+    }
+
 }

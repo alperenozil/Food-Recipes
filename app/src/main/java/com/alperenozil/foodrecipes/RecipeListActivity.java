@@ -39,51 +39,20 @@ public class RecipeListActivity extends BaseActivity {
         recipeListViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {
-
+                if (recipes!=null) {
+                    for(Recipe recipe : recipes){
+                        Log.d(TAG, "onChanged: "+recipe.toString());
+                    }
+                }
             }
         });
     }
 
+    private void searchRecipesApi(String query, int pageNumber){
+        recipeListViewModel.searchRecipesApi(query, pageNumber);
+    }
+
     private void testRetrofitRequest(){
-        /*RecipeApi recipeApi= ServiceGenerator.getRecipeApi();
-        Call<RecipeSearchResponse> responseCall=recipeApi
-                .searchRecipe(Constants.API_KEY,"chicken breast","1");
-        responseCall.enqueue(new Callback<RecipeSearchResponse>() {
-            @Override
-            public void onResponse(Call<RecipeSearchResponse> call, Response<RecipeSearchResponse> response) {
-                Log.d(TAG, "onResponse: server response "+response.toString());
-                if (response.code()==200){
-                    Log.d(TAG, "onResponse: "+response.body().toString());
-                    List<Recipe> recipes=new ArrayList<>(response.body().getRecipes());
-                    for (Recipe recipe:recipes){
-                        Log.d(TAG, "onResponse: "+recipe.getTitle());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RecipeSearchResponse> call, Throwable t) {
-
-            }
-        });*/
-        RecipeApi recipeApi= ServiceGenerator.getRecipeApi();
-        Call<RecipeResponse> responseCall=recipeApi
-                .getRecipe(Constants.API_KEY,"49421");
-        responseCall.enqueue(new Callback<RecipeResponse>() {
-            @Override
-            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
-                Log.d(TAG, "onResponse: server response "+response.toString());
-                if (response.code()==200){
-                    Log.d(TAG, "onResponse: "+response.body().toString());
-                    Recipe recipe=response.body().getRecipe();
-                    Log.d(TAG, "onResponse: recipe "+recipe.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RecipeResponse> call, Throwable t) {
-
-            }
-        });
+        searchRecipesApi("chicken breast",1);
     }
 }
