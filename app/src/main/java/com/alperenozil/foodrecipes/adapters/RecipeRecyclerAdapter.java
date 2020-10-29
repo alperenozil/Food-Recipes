@@ -34,7 +34,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         RequestOptions requestOptions=new RequestOptions().placeholder(R.drawable.ic_launcher_background);
         Glide.with(holder.itemView.getContext())
                 .setDefaultRequestOptions(requestOptions)
-                .load(mRecipes.get(position))
+                .load(mRecipes.get(position).getImage_url())
                 .into(((RecipeViewHolder)holder).image);
 
         ((RecipeViewHolder)holder).title.setText(mRecipes.get(position).getTitle());
