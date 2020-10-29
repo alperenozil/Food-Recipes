@@ -18,8 +18,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<Recipe> mRecipes;
     private OnRecipeListener mOnRecipeListener;
 
-    public RecipeRecyclerAdapter(List<Recipe> mRecipes, OnRecipeListener mOnRecipeListener) {
-        this.mRecipes = mRecipes;
+    public RecipeRecyclerAdapter(OnRecipeListener mOnRecipeListener) {
         this.mOnRecipeListener = mOnRecipeListener;
     }
 
@@ -40,12 +39,15 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         ((RecipeViewHolder)holder).title.setText(mRecipes.get(position).getTitle());
         ((RecipeViewHolder)holder).publisher.setText(mRecipes.get(position).getPublisher());
-        ((RecipeViewHolder)holder).socialScore.setText((int) mRecipes.get(position).getSocial_rank());
+        ((RecipeViewHolder)holder).socialScore.setText(String.valueOf((int) mRecipes.get(position).getSocial_rank()));
     }
 
     @Override
     public int getItemCount() {
-        return mRecipes.size();
+        if (mRecipes!=null) {
+            return mRecipes.size();
+        }
+        return 0;
     }
 
     public void setRecipes(List<Recipe> recipes){
