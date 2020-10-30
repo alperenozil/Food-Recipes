@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.SearchView;
 
 
 import com.alperenozil.foodrecipes.adapters.OnRecipeListener;
@@ -28,9 +29,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         setContentView(R.layout.activity_recipe_list);
         recyclerView=findViewById(R.id.recipe_list);
         recipeListViewModel= ViewModelProviders.of(this).get(RecipeListViewModel.class);
-        testRetrofitRequest();
-        subscriveObservers();
         initRecyclerView();
+        subscriveObservers();
+        initSearchView();
     }
 
     private void initRecyclerView() {
@@ -51,12 +52,20 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         });
     }
 
-    private void searchRecipesApi(String query, int pageNumber){
-        recipeListViewModel.searchRecipesApi(query, pageNumber);
-    }
+    private void initSearchView(){
+        final SearchView searchView=findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) { // will be triggered once
+                recipeListViewModel.searchRecipesApi(query, 1);
+                return false;
+            }
 
-    private void testRetrofitRequest(){
-        searchRecipesApi("chicken breast",1);
+            @Override
+            public boolean onQueryTextChange(String newText) { // will be triggered on every key stroke
+                return false;
+            }
+        });
     }
 
     @Override
