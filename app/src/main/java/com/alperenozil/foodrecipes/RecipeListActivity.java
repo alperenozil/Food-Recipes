@@ -1,12 +1,13 @@
 package com.alperenozil.foodrecipes;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.widget.SearchView;
+import android.util.Log;
 
 
 import com.alperenozil.foodrecipes.adapters.OnRecipeListener;
@@ -29,9 +30,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         setContentView(R.layout.activity_recipe_list);
         recyclerView=findViewById(R.id.recipe_list);
         recipeListViewModel= ViewModelProviders.of(this).get(RecipeListViewModel.class);
-        initRecyclerView();
-        subscriveObservers();
         initSearchView();
+        subscriveObservers();
+        initRecyclerView();
     }
 
     private void initRecyclerView() {
@@ -57,6 +58,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) { // will be triggered once
+                Log.d(TAG, "onQueryTextSubmit: "+query);
                 recipeListViewModel.searchRecipesApi(query, 1);
                 return false;
             }
