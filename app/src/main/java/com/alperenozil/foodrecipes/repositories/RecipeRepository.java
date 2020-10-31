@@ -40,4 +40,8 @@ public class RecipeRepository {
         mRecipeApiClient.searchRecipesApi(query, pageNumber);
     }
 
+    public void searchNextPage(){
+        searchRecipesApi(mQuery, mPageNumber + 1);
+    }
+
 }

@@ -12,6 +12,8 @@ import java.util.List;
 public class RecipeListViewModel extends ViewModel {
 
     private RecipeRepository mRecipeRepository;
+    private boolean mIsViewingRecipes;
+    private boolean mIsPerformingQuery;
 
     public RecipeListViewModel() {
         mRecipeRepository=RecipeRepository.getInstance();
@@ -22,6 +24,14 @@ public class RecipeListViewModel extends ViewModel {
     }
 
     public void searchRecipesApi(String query, int pageNumber){
+        mIsViewingRecipes = true;
+        mIsPerformingQuery = true;
         mRecipeRepository.searchRecipesApi(query, pageNumber);
+    }
+
+    public void searchNextPage(){
+        if(!mIsPerformingQuery && mIsViewingRecipes){
+            mRecipeRepository.searchNextPage();
+        }
     }
 }

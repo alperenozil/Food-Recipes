@@ -45,6 +45,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (!recyclerView.canScrollVertically(1)){ // if it is at the bottom
                     // search for next page's recipes
+                    recipeListViewModel.searchNextPage();
                 }
             }
         });
