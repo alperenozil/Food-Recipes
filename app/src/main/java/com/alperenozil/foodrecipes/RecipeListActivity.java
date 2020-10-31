@@ -1,5 +1,6 @@
 package com.alperenozil.foodrecipes;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -39,6 +40,14 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         mAdapter=new RecipeRecyclerAdapter(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (!recyclerView.canScrollVertically(1)){ // if it is at the bottom
+                    // search for next page's recipes
+                }
+            }
+        });
     }
 
     private void subscriveObservers(){
