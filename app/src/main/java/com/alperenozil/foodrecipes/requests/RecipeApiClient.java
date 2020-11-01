@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alperenozil.foodrecipes.AppExecutors;
 import com.alperenozil.foodrecipes.models.Recipe;
+import com.alperenozil.foodrecipes.requests.responses.RecipeResponse;
 import com.alperenozil.foodrecipes.requests.responses.RecipeSearchResponse;
 import com.alperenozil.foodrecipes.util.Constants;
 
@@ -19,12 +20,16 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.alperenozil.foodrecipes.util.Constants.NETWORK_TIMEOUT;
+
 public class RecipeApiClient {
 
     private static final String TAG = "RecipeApiClient";
     private static RecipeApiClient instance;
     private RetrieveRecipesRunnable mRetrieveRecipesRunnable;
+    private RetrieveRecipeRunnable mRetrieveRecipeRunnable;
     private MutableLiveData<List<Recipe>> mRecipes;
+    private MutableLiveData<Recipe> mRecipe;
 
     public static RecipeApiClient getInstance(){
         if(instance==null){
@@ -35,11 +40,14 @@ public class RecipeApiClient {
 
     private RecipeApiClient() {
         mRecipes=new MutableLiveData<>();
-
+        mRecipe=new MutableLiveData<>();
     }
 
     public LiveData<List<Recipe>> getRecipies() {
         return mRecipes;
+    }
+    public LiveData<Recipe> getRecipie() {
+        return mRecipe;
     }
 
     public void searchRecipesApi(String query, int pageNumber){
@@ -53,7 +61,18 @@ public class RecipeApiClient {
             public void run() {
                 handler.cancel(true);
             }
-        }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+        }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+    }
+
+    public void searchRecipeById(String recipeId){
+        mRetrieveRecipeRunnable=new RetrieveRecipeRunnable(recipeId);
+        final Future handler=AppExecutors.getInstance().networkIO().submit(mRetrieveRecipeRunnable);
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }, NETWORK_TIMEOUT,TimeUnit.MILLISECONDS);
     }
 
     private class RetrieveRecipesRunnable implements Runnable{
@@ -99,6 +118,55 @@ public class RecipeApiClient {
                     query,
                     String.valueOf(pageNumber)
             );
+        }
+        private void cancelRequest(){
+            Log.d(TAG, "cancelRequest: canceling the search request.");
+            cancelRequest = true;
+        }
+
+    }
+
+    private class RetrieveRecipeRunnable implements Runnable{
+        private String recipeId;
+        private int pageNumber;
+        boolean cancelRequest;
+
+        public RetrieveRecipeRunnable(String recipeId) {
+            this.recipeId = recipeId;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Response response = getRecipe(recipeId).execute();
+                if (cancelRequest){
+                    return;
+                }
+                if (response.code()==200){
+                    Recipe recipe=((RecipeResponse)response.body()).getRecipe();
+                    mRecipe.postValue(recipe);
+                } else {
+                    String error = response.errorBody().string();
+                    Log.e(TAG, "run: " + error );
+                    mRecipe.postValue(null);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                mRecipe.postValue(null);
+            }
+        }
+
+        private Call<RecipeSearchResponse> getRecipes(String query, int pageNumber){
+            return ServiceGenerator.getRecipeApi().searchRecipe(
+                    Constants.API_KEY,
+                    query,
+                    String.valueOf(pageNumber)
+            );
+        }
+        private Call<RecipeResponse> getRecipe(String recipeId){
+            return ServiceGenerator.getRecipeApi().getRecipe(
+                    Constants.API_KEY,
+                    recipeId);
         }
         private void cancelRequest(){
             Log.d(TAG, "cancelRequest: canceling the search request.");
